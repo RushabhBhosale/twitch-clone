@@ -6,9 +6,9 @@ export const getRecommended = async () => {
 
   try {
     const self = await getSelf();
-    userId = self.id
+    userId = self.id;
   } catch (error) {
-    userId = null
+    userId = null;
   }
 
   let users = [];
@@ -16,14 +16,27 @@ export const getRecommended = async () => {
   if (userId) {
     users = await db.user.findMany({
       where: {
-        NOT: {
-          id: userId
-        }
+        AND: [
+          {
+            NOT: {
+              id: userId,
+            },
+          },
+          {
+            NOT: {
+              followedBy: {
+                some: {
+                  followerId: userId,
+                },
+              },
+            },
+          },
+        ],
       },
       orderBy: {
         createdAt: "desc",
       },
-    })
+    });
   } else {
     users = await db.user.findMany({
       orderBy: {
@@ -31,8 +44,6 @@ export const getRecommended = async () => {
       },
     });
   }
-
-
 
   return users;
 };

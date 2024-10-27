@@ -25,6 +25,8 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  blocking  Block[]  @relation("Blocking")
+  blockedBy Block[]  @relation("BlockedBy")
 }
 
 model Follow {
@@ -37,4 +39,13 @@ model Follow {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Block {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  blockerId String @unique @db.ObjectId
+  blockedId String @unique @db.ObjectId
+
+  blocker User @relation("Blocking", fields: [blockerId], references: [id], onDelete: Cascade)
+  blocked User @relation("BlockedBy", fields: [blockedId], references: [id], onDelete: Cascade)
 }

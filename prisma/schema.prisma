@@ -38,7 +38,7 @@ model Stream {
   name         String
   thumbnailUrl String?
 
-  ingressId String?
+  ingressId String? @unique
   serverUrl String?
   streamKey String?
 
@@ -52,8 +52,6 @@ model Stream {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@index([ingressId])
 }
 
 model Follow {
